@@ -23,7 +23,21 @@ public static class AutomateFunction
       .Flatten()
       .Count(b => b.speckle_type == functionInputs.SpeckleTypeToCount);
 
+    // Filter the flattened objects for "Room" types specifically
+    var rooms = commitObject
+        .Flatten()
+        .Where(b => b.speckle_type.Contains("Room")) // Assuming "Room" is the correct speckle_type
+        .ToList();
+
+    int roomCount = rooms.Count;
+
+    Console.WriteLine($"Counted {roomCount} rooms");
+
+    // Write the number of rooms to a text file
+    File.WriteAllText("report.txt", $"Counted {roomCount} rooms");
+
     Console.WriteLine($"Counted {count} objects");
+    await automationContext.StoreFileResult("report.txt");
     automationContext.MarkRunSuccess($"Counted {count} objects");
   }
 }
